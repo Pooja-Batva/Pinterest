@@ -38,6 +38,8 @@ const registerUser = async(req, res) => {
         throw new ApiError(500, "User registration failed");
     }
 
+    console.log(newUser);
+
     return res.status(201).json((
         new ApiResponse(201, "User registered successfully", newUser)
     ));

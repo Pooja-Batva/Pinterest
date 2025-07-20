@@ -1,8 +1,8 @@
-import { User } from "./user.model";
-import {Post} from "./post.model";
+import { User } from "./user.model.js";
+import {Post} from "./post.model.js";
 import {Comment} from "./comment.model.js";
-import {like} from "./like.model.js";
-import {follow} from "./follow.model.js";
-import {board} from "./board.model.js";
+import {Like} from "./like.model.js";
+import {Follow} from "./follow.model.js";
+import {Board} from "./board.model.js";
 
-export { User, Post, Comment, like, follow, board };
+export { User, Post, Comment, Like, Follow, Board };
