@@ -22,7 +22,7 @@ const userSchema = new Schema(
         },
         avatar : { //store in cloudinary
             type : String,
-            default : "https://i.pinimg.com/474x/b5/e5/fc/b5e5fc940044d2f862acbd07b9da35b2.jpg"
+            default : "../public/temp/image.png"
         },
         bio : {
             type : String,
@@ -33,15 +33,7 @@ const userSchema = new Schema(
                 type : Schema.Types.ObjectId,
                 ref : "Post"
             }
-        ],
-        boards : [],
-        saved_pins : [],
-        followers : {
-            type : Number
-        },
-        following : {
-            type : Number
-        }
+        ]
     }, 
     {
         timestamps : true
