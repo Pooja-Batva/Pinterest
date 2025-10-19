@@ -4,17 +4,13 @@ import {ApiError, ApiResponse} from '../utils/index.js';
 const generateAccessAndRefreshToken = async function(userId) {
     try {
         const user = await User.findOne(userId);
-        // console.log("inside generateaccessrefreshtoken",user);
         const accessToken = user.generateAccessToken();
-        // console.log("inside generateaccessrefreshtoken",accessToken);
         const refreshToken = user.generateRefreshToken();
-        // console.log("inside generateaccessrefreshtoken",refreshToken);
 
         // store to db
         console.log(accessToken, refreshToken);
         user.refreshToken = refreshToken;
         await user.save({validateBeforeSave: false});
-        // console.log("afterrefreshtoken generated",user);
 
         return {accessToken, refreshToken}
     } catch (error) {
@@ -59,10 +55,27 @@ const registerUser = async(req, res) => {
         throw new ApiError(500, "User registration failed");
     }
 
+    // generate Access and Refresh Tokens
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(newUser._id);
+     // cookies
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+
     console.log(newUser);
 
-    return res.status(201).json((
-        new ApiResponse(201, "User registered successfully", newUser)
+    return res
+    .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json((
+        new ApiResponse(
+            201, 
+            "User registered successfully", 
+            {user : newUser, accessToken, refreshToken}
+        )
     ));
 }
 
