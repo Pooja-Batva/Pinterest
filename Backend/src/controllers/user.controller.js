@@ -4,16 +4,17 @@ import {ApiError, ApiResponse} from '../utils/index.js';
 const generateAccessAndRefreshToken = async function(userId) {
     try {
         const user = await User.findOne(userId);
-        console.log("inside generateaccessrefreshtoken",user);
+        // console.log("inside generateaccessrefreshtoken",user);
         const accessToken = user.generateAccessToken();
-        console.log("inside generateaccessrefreshtoken",accessToken);
+        // console.log("inside generateaccessrefreshtoken",accessToken);
         const refreshToken = user.generateRefreshToken();
-        console.log("inside generateaccessrefreshtoken",refreshToken);
+        // console.log("inside generateaccessrefreshtoken",refreshToken);
 
         // store to db
+        console.log(accessToken, refreshToken);
         user.refreshToken = refreshToken;
         await user.save({validateBeforeSave: false});
-        console.log("afterrefreshtoken generated",user);
+        // console.log("afterrefreshtoken generated",user);
 
         return {accessToken, refreshToken}
     } catch (error) {
