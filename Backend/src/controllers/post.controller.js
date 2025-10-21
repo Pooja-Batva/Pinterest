@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { Like } from "../models/like.model.js";
 import { Post } from "../models/post.model.js";
 import { ApiError, ApiResponse, uploadImage } from "../utils/index.js"
 
@@ -47,7 +47,32 @@ const deletePost = async(req, res) => {
     return res.status(200).json("Post Deleted Successfully");
 }
 
+const likePost = async(req, res) => {
+    const postId = req.params.id;
+    const userId = req.user._id;
+    const liked = await Like.findOne({
+        post : postId,
+        user : userId
+    });
+
+    if(liked !== null){
+        await Like.findOneAndDelete({
+            post : postId,
+            user : userId
+        })
+    }else{
+        await Like.create(
+            {
+                post : postId,
+                user : userId,
+            }
+        );
+    } 
+    return res.status(200).json("Liked by user");
+}
+
 export {
     createPost,
     deletePost,
+    likePost
 }
