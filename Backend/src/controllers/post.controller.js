@@ -71,8 +71,14 @@ const likePost = async(req, res) => {
     return res.status(200).json("Liked by user");
 }
 
+const likeCount = async(req, res) => {
+    const postId = req.params.id;
+    const count = await Like.countDocuments(postId);
+    return res.status(200).json(count);
+}
 export {
     createPost,
     deletePost,
-    likePost
+    likePost,
+    likeCount
 }
