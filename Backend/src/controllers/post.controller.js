@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Post } from "../models/post.model.js";
 import { ApiError, ApiResponse, uploadImage } from "../utils/index.js"
 
@@ -40,6 +41,13 @@ const createPost = async(req, res) => {
 
 }
 
+const deletePost = async(req, res) => {
+    const postId = req.params.id;
+    await Post.findByIdAndDelete(postId);
+    return res.status(200).json("Post Deleted Successfully");
+}
+
 export {
     createPost,
+    deletePost,
 }
