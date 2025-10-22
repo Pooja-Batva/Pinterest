@@ -1,3 +1,4 @@
+import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 import { Post } from "../models/post.model.js";
 import { ApiError, ApiResponse, uploadImage } from "../utils/index.js"
@@ -76,9 +77,41 @@ const likeCount = async(req, res) => {
     const count = await Like.countDocuments(postId);
     return res.status(200).json(count);
 }
+
+const addComment = async(req, res) => {
+    const {message} = req.body;
+    const postId = req.params.id;
+    const userId = req.user._id;
+    const msg = await Comment.create(
+        {
+            message,
+            user : userId,
+            post : postId
+        }
+    );
+
+    if(!msg){
+        throw new ApiError(500, "unable to add comment")
+    }
+
+    return res.status(200).json("comment add successfully");
+}
+
+const showComments = async(req, res) => {
+    const postId = req.params.id;
+    const comments = await Comment.find({post : postId}).populate("user", "username").select("message user");
+    const formatted = comments.map(c => ({
+        message : c.message,
+        username : c.user.username
+    }))
+    return res.status(200).json(formatted);
+}
+
 export {
     createPost,
     deletePost,
     likePost,
-    likeCount
+    likeCount,
+    addComment,
+    showComments,
 }
