@@ -1,4 +1,4 @@
-import { User } from '../models/index.js';
+import { Follow, User } from '../models/index.js';
 import {ApiError, ApiResponse} from '../utils/index.js';
 
 const generateAccessAndRefreshToken = async function(userId) {
@@ -167,10 +167,50 @@ const logoutUser =  async(req, res) => {
     )
 }
 
+const follow = async(req, res) => {
+    const userId = req.user._id;
+    const other = req.params.id;
+    const exist = await Follow.findOne({
+        follower : userId,
+        following : other
+    });
+    if(exist !== null){
+        await Follow.findOneAndDelete({
+            follower : userId,
+            following : other
+        });
+        return res.status(200).json("unfollow sucessfully");
+    }
+    const doFollow = await Follow.create(
+        {
+            follower : userId,
+            following : other
+        }
+    );
+    if(!doFollow){
+        throw new ApiError(500, "Unable to follow");
+    }
 
+    return res.status(200).json("Followed successfully");
+}
+
+const getfollowers = async(req, res) => {
+    const userId = req.user._id;
+    const followers = await Follow.countDocuments({following : userId});
+    return res.status(200).json(followers);
+}
+
+const getFollowing = async(req, res) => {
+    const userId = req.user._id;
+    const following = await Follow.countDocuments({follower : userId});
+    return res.status(200).json(following);
+}
 
 export { 
     registerUser,
     loginUser, 
     logoutUser,
+    follow,
+    getFollowing,
+    getfollowers,
 };
